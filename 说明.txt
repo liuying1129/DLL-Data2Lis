@@ -1,0 +1,148 @@
+版本：
+0.0.7.2:支持后期捆绑的调用方式
+0.0.7.1:参数中增加"优先级别"
+0.0.7.0:原始版本
+
+
+Delphi中创建COM组件步骤:
+File->New->Other->ActiveX->ActiveX Library
+假设Library的名称(即工程名)为"Data2LisSvr"
+
+File->New->Other->ActiveX->Automation Object
+假设类名(CoClass Name)填"Data2Lis"
+
+注:方法参数中不要使用Pchar类型。否则后期捆绑调用时报错“不正确的变量类型”
+
+
+注册(需CalcItemPro.dll、CalParser.dll、LYFunction.dll支持)：
+regsvr32.exe data2lissvr.dll
+反注册：
+regsvr32.exe -u data2lissvr.dll
+
+前期捆绑的调用方法：
+导入类型库:
+Project->Import Type Library...->Data2LisSvr Library->Create Unit
+
+var
+  FInts:IData2Lis;
+  ReceiveItemInfo:OleVariant;
+begin
+      FInts :=CoData2Lis.Create;
+      //FInts := CreateComObject(Class_Data2Lis) as IData2Lis;//创建COM,与上句同效果
+      FInts.fData2Lis(ReceiveItemInfo,pchar(SpecNo),pchar(sCheckDate),
+        pchar(GroupName),pchar(SpecType),pchar(SpecStatus),pchar(EquipChar),
+        pchar(CombinID),pchar(LisClassName),pchar(LisFormCaption),pchar(ConnectString),
+        pchar(QuaContSpecNoG),pchar(QuaContSpecNo),pchar(QuaContSpecNoD),'',
+        IsSure,HasCalaItem,pchar(Diagnosetype));
+      if FInts<>nil then FInts:=nil;
+end;
+
+C#:
+项目->添加引用->COM,.Net会把COM进行托管语言转换,便可以在"引用"下看到转换以后的中间DLL(命名空间),
+   Data2LisSvr.Data2LisClass cc = new Data2LisSvr.Data2LisClass();
+   cc.fData2Lis(...);
+
+
+后期捆绑的调用方法：
+delphi:
+var
+    DigiCard1:OleVariant;
+begin
+  DigiCard1:=CreateOleObject('Data2LisSvr.Data2Lis');//(服务名.类名)
+  DigiCard1.Method1(...);
+  if not VarIsEmpty(DigiCard1) then DigiCard1:= unAssigned;
+end;
+
+VB:
+    Dim DigiCard1 As Object    
+    Set DigiCard1 = CreateObject("Data2LisSvr.Data2Lis")
+    DigiCard1.Method1 123, "aaa", ...
+
+PB:
+  OLEObject ole_object
+  ole_object = CREATE OLEObject
+  ole_object.ConnectToNewObject("Data2LisSvr.Data2Lis")
+  ole_object.Method1(1,'哈哈',...)
+
+C#:
+   Type m_type = Type.GetTypeFromProgID("Data2LisSvr.Data2Lis");//(服务名.类名)
+   if (m_type == null)
+   {
+      MessageBox.Show("服务名.类名 无效");
+      return;
+   }
+   object m_object = Activator.CreateInstance(m_type,true);//c/s调用可不要true;b/s调用必须要true,否则报内存错误
+
+   //按需要创建参数
+   object[] parameter = new object[18];
+   parameter[0] = null;
+   parameter[1] = "";
+   parameter[2] = "";
+   parameter[3] = "血球组";
+   parameter[4] = "";
+   parameter[5] = "";
+   parameter[6] = "X";
+   parameter[7] = "54";
+   parameter[8] = "张三三{!@#}性别{!@#}出生日期{!@#}年龄{!@#}门诊/住院号{!@#}送检科室{!@#}送检医生{!@#}床号{!@#}临床诊断{!@#}备注{!@#}检验操作者{!@#}铜绿假单胞菌";
+   parameter[9] = "";
+   parameter[10] = "user id=;password=;data source=.;Initial Catalog=yklis;provider=SQLOLEDB.1;Integrated Security=SSPI;";
+   parameter[11] = "3333333333";
+   parameter[12] = "2222222222";
+   parameter[13] = "1111111111";
+   parameter[14] = @"C:\Template.xml";
+   parameter[15] = true;
+   parameter[16] = true;
+   parameter[17] = "常规";
+
+   m_type.InvokeMember("fData2Lis", System.Reflection.BindingFlags.Default | System.Reflection.BindingFlags.InvokeMethod, null, m_object, parameter);
+
+
+注:生成组件的类型库接口文件ABC_TLB.pas,则ABC为服务名;在ABC_TLB.pas中查找CoClass
+可找到类名
+
+
+调试COM组件的方法:
+1.在IDE菜单中选择Run|Install COM+ Object，安装COM+
+2.控制面板->性能与维护->管理工具->组件服务，找到刚才安装的COM+，右键->属性->常规，复制应用程序ID
+3.在'组件服务'中注册的组件上点右键,选择属性,在属性的"高级"页中设置"调试路径",
+录入: C:\Program Files\Borland\delphi7\Bin\delphi32.exe dllhost.exe /ProcessID:{****},
+其中括号内的**为刚才复制的应用程序ID
+4.Delphi IDE中菜单Run|Parameters,在Host Application中填上DllHost.EXE的全路径，一般在C:\Windows\System32\DLLHOST.EXE
+在Parameters中填入/ProcessID:{********},其中括号内的**为刚才复制的应用程序ID，F9运行COM+程序，并设置断点
+5.Project->Options->Linker:勾选Include TD32 debug info、Include remote debug symbols
+6.运行调用COM+的应用程序，当执行到COM+的断点就自动进入Delphi的调试环境了  
+
+补充两点:
+1.COM程序不能放在中文目录下(目录尽量简单)，并且生成的DLL不能放在别的目录。也就是在Option中不要设置文件输出路径。 
+2.调用程序不能传入参数nil
+
+
+函数fData2Lis参数的意义：
+pReceiveItemInfo: 元素为OleVariant类型的一维数组.
+该数组的每个元素又装载了一个4维数组(第1个元素是联机标识、第2个元素是检验结果、第3个元素是直方图数据字符串、第4个元素是图片路径及名称).
+联机标识、检验结果可传入字符串类型、整型、浮点型，传入浮点型将最多保留4位小数，并且四舍五入，故强烈建议超过4位小数的数据以字符串传入，避免意想不到的结果
+直方图数据字符串格式如:'12 23.4 56.7',即每个数据点之间用空格隔开
+图片路径及名称:仅支持.bmp、.jpg、.jpeg格式图片
+该方式传入时参数pXmlPath传入''; 
+pReceiveItemInfo的赋值示例代码如下:
+  pReceiveItemInfo:=VarArrayCreate([0,17],varVariant);//创建了一个有18个元素的变体数组
+  pReceiveItemInfo[i]:=VarArrayof(['1','12.5','12 23.4 56.7','c:\test\aa.bmp']);//为数组的第i+1个元素赋值
+pSpecNo: 样本号,一般为四位,如0001; 
+pCheckDate: 检查日期.格式如:年-月-日 时:分:秒
+pGroupName: 工作组,Lis的工作组之一; 
+pSpecType: 样本类型,Lis的类型之一; 
+pSpecStatus: 样本状态,Lis的状态之一; 
+pEquipChar: 仪器字母; 
+pCombinID: 组合项目代码; 
+pLisClassName: 病人附加信息.格式:姓名{!@#}性别{!@#}出生日期{!@#}年龄{!@#}门诊/住院号{!@#}送检科室{!@#}送检医生{!@#}床号{!@#}临床诊断{!@#}备注{!@#}检验操作者{!@#}细菌{!@#}试管条码号
+"出生日期"格式:YYYY-MM-DD
+"试管条码号":做仪器双向接口时，从预约登记系统中取病人信息
+pLisFormCaption: Lis窗体标题; 
+pConnectString: ADO连接字符串; 
+pQuaContSpecNoG: 高值质控样本号,一般为四位,如9999; 
+pQuaContSpecNo: 常值质控样本号,一般为四位,如9998; 
+pQuaContSpecNoD: 低值质控样本号,一般为四位,如9997; 
+pXmlPath: Xml文件路径及名称.该方式传入时pReceiveItemInfo传Unassigned,pSpecNo、pCheckDate可传''.文件格式见Template.xml
+pIsSure: 是否记录日志; 
+pHasCalaItem: 保留参数
+pDiagnosetype:优先级别,一般传'常规';

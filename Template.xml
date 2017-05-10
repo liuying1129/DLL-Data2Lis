@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="gb2312"?>
+<SpecData SpecNo="0001" CheckDate="2006-01-23">
+<ItemInfo>
+<DltType>WBC</DltType>
+<Value>33</Value>
+<Histogram>23 45 67 12</Histogram>
+<ImagePath>c:\abc.bmp</ImagePath>
+</ItemInfo>
+<ItemInfo>
+<DltType>RBC</DltType>
+<Value>12.5</Value>
+<Histogram>12 22 67 11 5</Histogram>
+<ImagePath>c:\def.bmp</ImagePath>
+</ItemInfo>
+</SpecData>
