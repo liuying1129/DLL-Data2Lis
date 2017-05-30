@@ -85,6 +85,7 @@ procedure addOrEditCalcValu(const Aadoconnstr:Pchar;const checkunid: integer;con
 //找到表达式中小数点位数的最大值.如56.5*100+23.01的值为2
 function MaxDotLen(const ACalaExp:PChar):integer;stdcall;external 'LYFunction.dll';
 function Gif2Bmp(const AGifFile,ABmpFile:Pchar):boolean;stdcall;external 'LYFunction.dll';
+function Png2Bmp(const APngFile,ABmpFile:Pchar):boolean;stdcall;external 'LYFunction.dll';
 function CalParserValue(const CalExpress:Pchar;var ReturnValue:single):boolean;stdcall;external 'CalParser.dll';
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
 
@@ -334,6 +335,7 @@ begin
           and (uppercase(ExtractFileExt(PItem^.Machine_ImagePath))<>'.JPG')
           and (uppercase(ExtractFileExt(PItem^.Machine_ImagePath))<>'.JPEG')
           and (uppercase(ExtractFileExt(PItem^.Machine_ImagePath))<>'.GIF')
+          and (uppercase(ExtractFileExt(PItem^.Machine_ImagePath))<>'.PNG')
           then continue;
     end;
 
@@ -356,10 +358,13 @@ begin
           if trim(PItem^.Machine_Histogram)<>'' then//修改直方图数据
             adotemp11.FieldByName('histogram').AsString:=PItem^.Machine_Histogram;
           if (FileExists(PItem^.Machine_ImagePath))and
-            ((uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.BMP')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPEG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.GIF'))
+            ((uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.BMP')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPEG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.GIF')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.PNG'))
           then//修改图片
           begin
             IF Gif2Bmp(pchar(PItem^.Machine_ImagePath),pchar(ChangeFileExt(strpas(buf),'.bmp'))) THEN
+              PItem^.Machine_ImagePath:=ChangeFileExt(strpas(buf),'.bmp');//图片文件及路径
+
+            IF Png2Bmp(pchar(PItem^.Machine_ImagePath),pchar(ChangeFileExt(strpas(buf),'.bmp'))) THEN
               PItem^.Machine_ImagePath:=ChangeFileExt(strpas(buf),'.bmp');//图片文件及路径
 
             MS:=TMemoryStream.Create;
