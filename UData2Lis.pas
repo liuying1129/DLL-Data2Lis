@@ -431,11 +431,14 @@ begin
           adotemp11.Parameters.ParamByName('p_Histogram').Value:=PItem^.Machine_Histogram 
         ELSE adotemp11.Parameters.ParamByName('p_Histogram').Value:=Unassigned;
         if (FileExists(PItem^.Machine_ImagePath))and
-          ((uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.BMP')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPEG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.GIF'))
+          ((uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.BMP')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.JPEG')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.GIF')or(uppercase(ExtractFileExt(PItem^.Machine_ImagePath))='.PNG'))
         THEN//插入图片
         begin
-            IF Gif2Bmp(pchar(PItem^.Machine_ImagePath),pchar(ChangeFileExt(strpas(buf),'.bmp'))) THEN
-              PItem^.Machine_ImagePath:=ChangeFileExt(strpas(buf),'.bmp');//图片文件及路径
+          IF Gif2Bmp(pchar(PItem^.Machine_ImagePath),pchar(ChangeFileExt(strpas(buf),'.bmp'))) THEN
+            PItem^.Machine_ImagePath:=ChangeFileExt(strpas(buf),'.bmp');//图片文件及路径
+
+          IF Png2Bmp(pchar(PItem^.Machine_ImagePath),pchar(ChangeFileExt(strpas(buf),'.bmp'))) THEN
+            PItem^.Machine_ImagePath:=ChangeFileExt(strpas(buf),'.bmp');//图片文件及路径
 
           MS:=TMemoryStream.Create;
           J1:=TJPEGImage.Create;
