@@ -467,6 +467,7 @@ procedure SaveDatatoDB(var valetudinarianInfoId:integer);
 //valetudinarianInfoId为病人基本信息表中的“自动增加的唯一编号”字段值
 var
   adotemp11:tadoquery;
+  report_doctor:string;//审核人
 Begin
   adotemp11:=tadoquery.Create(nil);
   adotemp11.Connection:=ADOConn;
@@ -478,6 +479,8 @@ Begin
   adotemp11.Parameters.ParamByName('P_check_date').Value:=FormatDateTime('YYYY-MM-DD',CheckDate);
   adotemp11.Parameters.ParamByName('Diagnosetype').Value:=Diagnosetype;
   adotemp11.Open;
+  report_doctor:=adotemp11.fieldbyname('report_doctor').AsString;
+  
   if adotemp11.RecordCount>0 then //有该病人基本信息的情况
   begin
     valetudinarianInfoId:=adotemp11.fieldbyname('unid').AsInteger;
@@ -486,6 +489,9 @@ Begin
     addrecord(valetudinarianInfoId); //增加病人信息表中记录
   end;
   adotemp11.Free;
+
+  if report_doctor<>'' then exit;//表示已审核的检验单，不修改其结果
+  
   addoreditvalueRecord(valetudinarianInfoId);   //增加或编辑检验结果表中记录
 
   addOrEditCalcItem(pchar(ConnectString),pchar(trim(CombinID)),valetudinarianInfoId);    //插入计算项目
