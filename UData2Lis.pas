@@ -293,9 +293,13 @@ begin
     try
       adotemp11.Open;
       checkunid:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
-    finally
-      adotemp11.Free;
+    except
+      on E:Exception do
+      begin
+        WriteLog(pchar('Data2Lis。方法addrecord失败:'+E.Message));
+      end;
     end;
+    adotemp11.Free;
 end;
 
 procedure addoreditvalueRecord(const checkunid:integer); //将仪器数据增加或编辑到检验结果表中
@@ -455,8 +459,12 @@ begin
         try
           adotemp11.EXECSql ;
         except
-          adotemp11.Free;
-          exit;
+          on E:Exception do
+          begin
+            adotemp11.Free;
+            WriteLog(pchar('Data2Lis。插入明细失败:'+E.Message));
+            exit;
+          end;
         end;
     end;
   end;
