@@ -75,6 +75,8 @@ var
   Operator:string;//检验操作者
   GermName:string;//细菌
   His_Unid:string;//chk_con_his.Unid
+  EquipUnid:string;//设备唯一编号
+
 
 //将计算项目增加或编辑到检验结果表中
 procedure addOrEditCalcItem(const Aadoconnstr:Pchar;const ComboItemID:Pchar;const checkunid: integer);stdcall;external 'CalcItemPro.dll';
@@ -319,6 +321,8 @@ Var
   hinst: HMODULE;
 
   chk_valu_his_valueid:string;
+
+  iEquipUnid:integer;
 begin
   //取得COM自身的路径
   hinst:=GetModuleHandle('Data2LisSvr.dll');
@@ -407,8 +411,8 @@ begin
         adotemp11.Sql.Clear;
         adotemp11.Sql.text:=
         'Insert into chk_valu ('+
-        ' pkunid,pkcombin_id,itemid,itemvalue,issure,Histogram,Photo,Surem2) values ('+
-        ':P_pkunid,:P_pkcombin_id,:P_itemid,:P_itemvalue,:P_issure,:p_Histogram,:Photo,:Surem2) ';
+        ' pkunid,pkcombin_id,itemid,itemvalue,issure,Histogram,Photo,Surem2,EquipUnid) values ('+
+        ':P_pkunid,:P_pkcombin_id,:P_itemid,:P_itemvalue,:P_issure,:p_Histogram,:Photo,:Surem2,:EquipUnid) ';
         adotemp11.Parameters.ParamByName('P_pkunid').Value:=checkunid ;
 
         if His_Unid<>'' then
@@ -430,6 +434,9 @@ begin
         adotemp11.Parameters.ParamByName('P_itemvalue').Value:=PItem^.Machine_ItemValu ;
         adotemp11.Parameters.ParamByName('P_issure').Value:=ifThen(PItem^.Machine_CombId='','0','1') ;//如果没有组合项目就不要显示了,让操作人员自己勾选组合项目吧//trim(sCombinID)
         adotemp11.Parameters.ParamByName('Surem2').Value:=chk_valu_his_valueid ;
+        if trystrtoint(EquipUnid,iEquipUnid) then
+          adotemp11.Parameters.ParamByName('EquipUnid').Value:=iEquipUnid
+        else adotemp11.Parameters.ParamByName('EquipUnid').Value:=null;
 
         if trim(PItem^.Machine_Histogram)<>'' then//插入直方图数据
           adotemp11.Parameters.ParamByName('p_Histogram').Value:=PItem^.Machine_Histogram 
@@ -755,6 +762,7 @@ begin
         adotemp22.Free;
       end;
     end;
+    if k+1=14 then EquipUnid:=trim(lsPatientOtherInfo[k]);
   end;
   lsPatientOtherInfo.Free;
   if sDateOfBirth<>'' then//根据出生日期算年龄
