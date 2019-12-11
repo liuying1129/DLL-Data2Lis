@@ -33,8 +33,15 @@ begin
         pchar(GroupName),pchar(SpecType),pchar(SpecStatus),pchar(EquipChar),
         pchar(CombinID),pchar(LisClassName),pchar(LisFormCaption),pchar(ConnectString),
         pchar(QuaContSpecNoG),pchar(QuaContSpecNo),pchar(QuaContSpecNoD),'',
-        IsSure,HasCalaItem,pchar(Diagnosetype));
-      if FInts<>nil then FInts:=nil;
+        IsSure,HasCalaItem,pchar(Diagnosetype),
+        '',
+        EquipUnid,
+        '','','','',
+        -1,-1,-1,-1,
+        -1,-1,-1,-1,
+        false,false,false,false);
+      //if FInts<>nil then FInts:=nil;
+      if not VarIsEmpty(FInts) then FInts:= unAssigned;
 end;
 
 C#:
@@ -134,10 +141,8 @@ pSpecType: 样本类型,Lis的类型之一;
 pSpecStatus: 样本状态,Lis的状态之一; 
 pEquipChar: 仪器字母; 
 pCombinID: 组合项目代码; 
-pLisClassName: 病人附加信息.格式:姓名{!@#}性别{!@#}出生日期{!@#}年龄{!@#}门诊/住院号{!@#}送检科室{!@#}送检医生{!@#}床号{!@#}临床诊断{!@#}备注{!@#}检验操作者{!@#}细菌{!@#}试管条码号{!@#}设备唯一编号
+pLisClassName: 病人附加信息.格式:姓名{!@#}性别{!@#}出生日期{!@#}年龄{!@#}门诊/住院号{!@#}送检科室{!@#}送检医生{!@#}床号{!@#}临床诊断{!@#}备注{!@#}检验操作者{!@#}细菌
 "出生日期"格式:YYYY-MM-DD
-"试管条码号":做仪器双向接口时，从预约登记系统中取病人信息
-"设备唯一编号":设备管理中的唯一编号
 pLisFormCaption: Lis窗体标题; 
 pConnectString: ADO连接字符串; 
 pQuaContSpecNoG: 高值质控样本号,一般为四位,如9999; 
@@ -147,3 +152,21 @@ pXmlPath: Xml文件路径及名称.该方式传入时pReceiveItemInfo传Unassigned,pSpecNo、pC
 pIsSure: 是否记录日志; 
 pHasCalaItem: 保留参数
 pDiagnosetype:优先级别,一般传'常规';
+pBarCode: 试管条码号，做仪器双向接口时，从预约登记系统中取病人信息
+pEquipUnid: 设备唯一编号，设备管理中的唯一编号
+pReserve1: 保留参数1
+pReserve2: 保留参数2
+pReserve3: 保留参数3
+pReserve4: 保留参数4
+pReserve5: 保留参数5
+pReserve6: 保留参数6
+pReserve7: 保留参数7
+pReserve8: 保留参数8
+pReserve9: 保留参数9
+pReserve10: 保留参数10
+pReserve11: 保留参数11
+pReserve12: 保留参数12
+pReserve13: 保留参数13
+pReserve14: 保留参数14
+pReserve15: 保留参数15
+pReserve16: 保留参数16

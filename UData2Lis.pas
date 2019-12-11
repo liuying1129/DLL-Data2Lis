@@ -681,7 +681,7 @@ var
   adotemp11,adotemp22:tadoquery;
   fs:TFormatSettings;
   LogStr:string;
-  sBarCode:string;
+  //sBarCode:string;
 begin
   ADOConn.ConnectionString:=pConnectString;
 
@@ -744,6 +744,19 @@ begin
   ConnectString:=pConnectString;
   EquipUnid:=pEquipUnid;
 
+  //sBarCode:=trim(pBarCode);
+  if trim(pBarCode)<>'' then
+  begin
+    adotemp22:=tadoquery.Create(nil);
+    adotemp22.Connection:=ADOConn;
+    adotemp22.Close;
+    adotemp22.SQL.Clear;
+    adotemp22.SQL.Text:='select cch.unid from chk_con_his cch where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+trim(pBarCode)+',%'' ';
+    adotemp22.Open;
+    His_Unid:=adotemp22.fieldbyname('unid').AsString;
+    adotemp22.Free;
+  end;
+
   //2010-04-05 add by liuying
   lsPatientOtherInfo:=StrToList(pLisClassName,'{!@#}');
   for k:=0 to lsPatientOtherInfo.Count-1 do
@@ -760,21 +773,6 @@ begin
     if k+1=10 then Issure:=lsPatientOtherInfo[k];
     if k+1=11 then Operator:=lsPatientOtherInfo[k];
     if k+1=12 then GermName:=lsPatientOtherInfo[k];
-    if k+1=13 then
-    begin
-      sBarCode:=trim(lsPatientOtherInfo[k]);
-      if sBarCode<>'' then
-      begin
-        adotemp22:=tadoquery.Create(nil);
-        adotemp22.Connection:=ADOConn;
-        adotemp22.Close;
-        adotemp22.SQL.Clear;
-        adotemp22.SQL.Text:='select cch.unid from chk_con_his cch where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+sBarCode+',%'' ';
-        adotemp22.Open;
-        His_Unid:=adotemp22.fieldbyname('unid').AsString;
-        adotemp22.Free;
-      end;
-    end;
   end;
   lsPatientOtherInfo.Free;
   if sDateOfBirth<>'' then//根据出生日期算年龄
