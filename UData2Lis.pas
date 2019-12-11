@@ -17,7 +17,14 @@ type
       pGroupName, pSpecType, pSpecStatus, pEquipChar, pCombinID,
       pLisClassName, pLisFormCaption, pConnectString, pQuaContSpecNoG,
       pQuaContSpecNo, pQuaContSpecNoD, pXmlPath: WideString; pIsSure,
-      pHasCalaItem: WordBool; const pDiagnosetype: WideString): WordBool;
+      pHasCalaItem: WordBool; const pDiagnosetype: WideString;
+      const pBarCode: WideString;
+      const pEquipUnid: SYSINT;
+      const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
+      const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
+      const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;
+      const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
+      ): WordBool;
       stdcall;
   public
     procedure Initialize;override;
@@ -75,7 +82,7 @@ var
   Operator:string;//检验操作者
   GermName:string;//细菌
   His_Unid:string;//chk_con_his.Unid
-  EquipUnid:string;//设备唯一编号
+  EquipUnid:integer;//设备唯一编号
 
 
 //将计算项目增加或编辑到检验结果表中
@@ -321,8 +328,6 @@ Var
   hinst: HMODULE;
 
   chk_valu_his_valueid:string;
-
-  iEquipUnid:integer;
 begin
   //取得COM自身的路径
   hinst:=GetModuleHandle('Data2LisSvr.dll');
@@ -434,8 +439,8 @@ begin
         adotemp11.Parameters.ParamByName('P_itemvalue').Value:=PItem^.Machine_ItemValu ;
         adotemp11.Parameters.ParamByName('P_issure').Value:=ifThen(PItem^.Machine_CombId='','0','1') ;//如果没有组合项目就不要显示了,让操作人员自己勾选组合项目吧//trim(sCombinID)
         adotemp11.Parameters.ParamByName('Surem2').Value:=chk_valu_his_valueid ;
-        if trystrtoint(EquipUnid,iEquipUnid) then
-          adotemp11.Parameters.ParamByName('EquipUnid').Value:=iEquipUnid
+        if EquipUnid>0 then
+          adotemp11.Parameters.ParamByName('EquipUnid').Value:=EquipUnid
         else adotemp11.Parameters.ParamByName('EquipUnid').Value:=null;
 
         if trim(PItem^.Machine_Histogram)<>'' then//插入直方图数据
@@ -660,7 +665,14 @@ function TData2Lis.fData2Lis(pReceiveItemInfo: OleVariant; const pSpecNo,
   pCheckDate, pGroupName, pSpecType, pSpecStatus, pEquipChar, pCombinID,
   pLisClassName, pLisFormCaption, pConnectString, pQuaContSpecNoG,
   pQuaContSpecNo, pQuaContSpecNoD, pXmlPath: WideString; pIsSure,
-  pHasCalaItem: WordBool; const pDiagnosetype: WideString): WordBool;
+  pHasCalaItem: WordBool; const pDiagnosetype: WideString;
+  const pBarCode: WideString;
+  const pEquipUnid: SYSINT;
+  const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
+  const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
+  const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;
+  const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
+  ): WordBool;
 var
   valetudinarianInfoId,i,j,k:integer;
   XMLDocument:IXMLDocument;
@@ -730,6 +742,7 @@ begin
   EquipChar:=pEquipChar;
   Diagnosetype:=pDiagnosetype;
   ConnectString:=pConnectString;
+  EquipUnid:=pEquipUnid;
 
   //2010-04-05 add by liuying
   lsPatientOtherInfo:=StrToList(pLisClassName,'{!@#}');
@@ -762,7 +775,6 @@ begin
         adotemp22.Free;
       end;
     end;
-    if k+1=14 then EquipUnid:=trim(lsPatientOtherInfo[k]);
   end;
   lsPatientOtherInfo.Free;
   if sDateOfBirth<>'' then//根据出生日期算年龄

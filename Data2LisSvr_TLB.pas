@@ -78,7 +78,14 @@ type
                        const pConnectString: WideString; const pQuaContSpecNoG: WideString; 
                        const pQuaContSpecNo: WideString; const pQuaContSpecNoD: WideString; 
                        const pXmlPath: WideString; pIsSure: WordBool; pHasCalaItem: WordBool; 
-                       const pDiagnosetype: WideString): WordBool; stdcall;
+                       const pDiagnosetype: WideString;
+                       const pBarCode: WideString;
+                       const pEquipUnid: SYSINT;
+                       const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
+                       const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
+                       const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;              
+                       const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
+                       ): WordBool; stdcall;
   end;
 
 // *********************************************************************//
@@ -96,7 +103,14 @@ type
                        const pConnectString: WideString; const pQuaContSpecNoG: WideString; 
                        const pQuaContSpecNo: WideString; const pQuaContSpecNoD: WideString; 
                        const pXmlPath: WideString; pIsSure: WordBool; pHasCalaItem: WordBool; 
-                       const pDiagnosetype: WideString): WordBool; dispid 201;
+                       const pDiagnosetype: WideString;
+                       const pBarCode: WideString;
+                       const pEquipUnid: SYSINT;
+                       const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
+                       const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
+                       const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;              
+                       const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
+                       ): WordBool; dispid 201;
   end;
 
 // *********************************************************************//
