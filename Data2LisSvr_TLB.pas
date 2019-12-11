@@ -12,16 +12,16 @@ unit Data2LisSvr_TLB;
 // ************************************************************************ //
 
 // PASTLWTR : 1.2
-// File generated on 2008-01-17 10:54:08 from Type Library described below.
+// File generated on 2019-12-11 18:46:22 from Type Library described below.
 
 // ************************************************************************  //
-// Type Lib: D:\Data2Lis\Data2LisSvr.tlb (1)
+// Type Lib: D:\source_reference\DLL-Data2Lis\Data2LisSvr.tlb (1)
 // LIBID: {50040B52-E510-4681-B301-D11EAA7B5404}
 // LCID: 0
 // Helpfile: 
 // HelpString: Data2LisSvr Library
 // DepndLst: 
-//   (1) v2.0 stdole, (C:\WINDOWS\system32\stdole2.tlb)
+//   (1) v2.0 stdole, (C:\Windows\SysWOW64\stdole2.tlb)
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
 {$WARN SYMBOL_PLATFORM OFF}
@@ -78,14 +78,13 @@ type
                        const pConnectString: WideString; const pQuaContSpecNoG: WideString; 
                        const pQuaContSpecNo: WideString; const pQuaContSpecNoD: WideString; 
                        const pXmlPath: WideString; pIsSure: WordBool; pHasCalaItem: WordBool; 
-                       const pDiagnosetype: WideString;
-                       const pBarCode: WideString;
-                       const pEquipUnid: SYSINT;
-                       const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
-                       const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
-                       const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;              
-                       const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
-                       ): WordBool; stdcall;
+                       const pDiagnosetype: WideString; const pBarcode: WideString; 
+                       pEquipUnid: SYSINT; const pReserve1: WideString; 
+                       const pReserve2: WideString; const pReserve3: WideString; 
+                       const pReserve4: WideString; pReserve5: SYSINT; pReserve6: SYSINT; 
+                       pReserve7: SYSINT; pReserve8: SYSINT; pReserve9: Double; pReserve10: Double; 
+                       pReserve11: Double; pReserve12: Double; pReserve13: WordBool; 
+                       pReserve14: WordBool; pReserve15: WordBool; pReserve16: WordBool): WordBool; stdcall;
   end;
 
 // *********************************************************************//
@@ -103,14 +102,13 @@ type
                        const pConnectString: WideString; const pQuaContSpecNoG: WideString; 
                        const pQuaContSpecNo: WideString; const pQuaContSpecNoD: WideString; 
                        const pXmlPath: WideString; pIsSure: WordBool; pHasCalaItem: WordBool; 
-                       const pDiagnosetype: WideString;
-                       const pBarCode: WideString;
-                       const pEquipUnid: SYSINT;
-                       const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
-                       const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
-                       const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;              
-                       const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
-                       ): WordBool; dispid 201;
+                       const pDiagnosetype: WideString; const pBarcode: WideString; 
+                       pEquipUnid: SYSINT; const pReserve1: WideString; 
+                       const pReserve2: WideString; const pReserve3: WideString; 
+                       const pReserve4: WideString; pReserve5: SYSINT; pReserve6: SYSINT; 
+                       pReserve7: SYSINT; pReserve8: SYSINT; pReserve9: Double; pReserve10: Double; 
+                       pReserve11: Double; pReserve12: Double; pReserve13: WordBool; 
+                       pReserve14: WordBool; pReserve15: WordBool; pReserve16: WordBool): WordBool; dispid 201;
   end;
 
 // *********************************************************************//

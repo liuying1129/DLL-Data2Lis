@@ -19,11 +19,11 @@ type
       pQuaContSpecNo, pQuaContSpecNoD, pXmlPath: WideString; pIsSure,
       pHasCalaItem: WordBool; const pDiagnosetype: WideString;
       const pBarCode: WideString;
-      const pEquipUnid: SYSINT;
+      pEquipUnid: SYSINT;
       const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
-      const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
-      const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;
-      const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
+      pReserve5: SYSINT;pReserve6: SYSINT;pReserve7: SYSINT;pReserve8: SYSINT;
+      pReserve9: Double;pReserve10: Double;pReserve11: Double;pReserve12: Double;
+      pReserve13: WordBool;pReserve14: WordBool;pReserve15: WordBool;pReserve16: WordBool
       ): WordBool;
       stdcall;
   public
@@ -667,11 +667,11 @@ function TData2Lis.fData2Lis(pReceiveItemInfo: OleVariant; const pSpecNo,
   pQuaContSpecNo, pQuaContSpecNoD, pXmlPath: WideString; pIsSure,
   pHasCalaItem: WordBool; const pDiagnosetype: WideString;
   const pBarCode: WideString;
-  const pEquipUnid: SYSINT;
+  pEquipUnid: SYSINT;
   const pReserve1: WideString;const pReserve2: WideString;const pReserve3: WideString;const pReserve4: WideString;
-  const pReserve5: SYSINT;const pReserve6: SYSINT;const pReserve7: SYSINT;const pReserve8: SYSINT;
-  const pReserve9: Double;const pReserve10: Double;const pReserve11: Double;const pReserve12: Double;
-  const pReserve13: WordBool;const pReserve14: WordBool;const pReserve15: WordBool;const pReserve16: WordBool
+  pReserve5: SYSINT;pReserve6: SYSINT;pReserve7: SYSINT;pReserve8: SYSINT;
+  pReserve9: Double;pReserve10: Double;pReserve11: Double;pReserve12: Double;
+  pReserve13: WordBool;pReserve14: WordBool;pReserve15: WordBool;pReserve16: WordBool
   ): WordBool;
 var
   valetudinarianInfoId,i,j,k:integer;
