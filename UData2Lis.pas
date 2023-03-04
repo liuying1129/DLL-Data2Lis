@@ -83,6 +83,7 @@ var
   GermName:string;//细菌
   EquipUnid:integer;//设备唯一编号
   BarCode:String;//双向时,仪器读到的条码号.需要插入chk_con.TjJianYan,以便返回给HIS/PEIS
+  His_Unid:String;//对接外部系统时,HIS/PEIS编号.插入chk_con.His_Unid.对LIS无任何用处，只是用于返回给HIS/PEIS，可能HIS/PEIS用于关联受检者
 
 
 //将计算项目增加或编辑到检验结果表中
@@ -298,7 +299,7 @@ begin
     adotemp11.Parameters.ParamByName('Issure').Value:=Issure ;
     adotemp11.Parameters.ParamByName('Operator').Value:=Operator ;
     adotemp11.Parameters.ParamByName('GermName').Value:=GermName ;
-    adotemp11.Parameters.ParamByName('His_Unid').Value:='' ;
+    adotemp11.Parameters.ParamByName('His_Unid').Value:=His_Unid ;
     adotemp11.Parameters.ParamByName('TjJianYan').Value:=BarCode ;
     try
       adotemp11.Open;
@@ -726,6 +727,7 @@ begin
   ConnectString:=pConnectString;
   EquipUnid:=pEquipUnid;
   BarCode:=pBarCode;
+  His_Unid:=pReserve1;
 
   //2010-04-05 add by liuying
   lsPatientOtherInfo:=StrToList(pLisClassName,'{!@#}');

@@ -154,7 +154,7 @@ pHasCalaItem: 保留参数
 pDiagnosetype:优先级别,一般传'常规';
 pBarCode: 试管条码号，双向时,仪器读到的条码号.需要插入chk_con.TjJianYan,以便返回给HIS/PEIS
 pEquipUnid: 设备唯一编号，设备管理中的唯一编号
-pReserve1: 保留参数1
+pReserve1: 对接外部系统时,HIS/PEIS编号.插入chk_con.His_Unid.对LIS无任何用处，只是用于返回给HIS/PEIS，可能HIS/PEIS用于关联受检者
 pReserve2: 保留参数2
 pReserve3: 保留参数3
 pReserve4: 保留参数4
