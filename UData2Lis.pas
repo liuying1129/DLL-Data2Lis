@@ -81,8 +81,8 @@ var
   Issure:string;//备注
   Operator:string;//检验操作者
   GermName:string;//细菌
-  His_Unid:string;//chk_con_his.Unid
   EquipUnid:integer;//设备唯一编号
+  BarCode:String;//双向时,仪器读到的条码号.需要插入chk_con.TjJianYan,以便返回给HIS/PEIS
 
 
 //将计算项目增加或编辑到检验结果表中
@@ -269,10 +269,10 @@ begin
 
     sqlstr:='Insert into chk_con (checkid,check_date,combin_id,'+
     'report_date,Diagnosetype,flagetype,typeflagcase,LSH,'+
-    'patientname,sex,age,Caseno,deptname,check_doctor,bedno,diagnose,Issure,Operator,GermName,His_Unid)'+
+    'patientname,sex,age,Caseno,deptname,check_doctor,bedno,diagnose,Issure,Operator,GermName,His_Unid,TjJianYan)'+
     ' values (:P_checkid,:P_check_date,:p_combin_id,'+
     ':P_report_date,:P_Diagnosetype,:P_flagetype,:P_typeflagcase,:p_LSH,'+
-    ':patientname,:sex,:age,:Caseno,:deptname,:check_doctor,:bedno,:diagnose,:Issure,:Operator,:GermName,:His_Unid ) ';
+    ':patientname,:sex,:age,:Caseno,:deptname,:check_doctor,:bedno,:diagnose,:Issure,:Operator,:GermName,:His_Unid,:TjJianYan ) ';
     adotemp11:=tadoquery.Create(nil);
     adotemp11.Connection:=ADOConn;
     adotemp11.Close;
@@ -298,7 +298,8 @@ begin
     adotemp11.Parameters.ParamByName('Issure').Value:=Issure ;
     adotemp11.Parameters.ParamByName('Operator').Value:=Operator ;
     adotemp11.Parameters.ParamByName('GermName').Value:=GermName ;
-    adotemp11.Parameters.ParamByName('His_Unid').Value:=His_Unid ;
+    adotemp11.Parameters.ParamByName('His_Unid').Value:='' ;
+    adotemp11.Parameters.ParamByName('TjJianYan').Value:=BarCode ;
     try
       adotemp11.Open;
       checkunid:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
@@ -322,12 +323,9 @@ Var
   J1:TJPEGImage;
   ti:TImage;
   adotemp22:tadoquery;//修改图片用
-  adotemp55:tadoquery;
 
   buf: array[0..MAX_PATH] of Char;
   hinst: HMODULE;
-
-  chk_valu_his_valueid:string;
 begin
   //取得COM自身的路径
   hinst:=GetModuleHandle('Data2LisSvr.dll');
@@ -416,29 +414,13 @@ begin
         adotemp11.Sql.Clear;
         adotemp11.Sql.text:=
         'Insert into chk_valu ('+
-        ' pkunid,pkcombin_id,itemid,itemvalue,issure,Histogram,Photo,Surem2,EquipUnid) values ('+
-        ':P_pkunid,:P_pkcombin_id,:P_itemid,:P_itemvalue,:P_issure,:p_Histogram,:Photo,:Surem2,:EquipUnid) ';
+        ' pkunid,pkcombin_id,itemid,itemvalue,issure,Histogram,Photo,EquipUnid) values ('+
+        ':P_pkunid,:P_pkcombin_id,:P_itemid,:P_itemvalue,:P_issure,:p_Histogram,:Photo,:EquipUnid) ';
         adotemp11.Parameters.ParamByName('P_pkunid').Value:=checkunid ;
-
-        if His_Unid<>'' then
-        begin
-          adotemp55:=tadoquery.Create(nil);
-          adotemp55.Connection:=ADOConn;
-          adotemp55.Close;
-          adotemp55.SQL.Clear;
-          adotemp55.SQL.Text:='select valueid from chk_valu_his cvh where cast(cvh.pkunid as varchar)=:pkunid and cvh.pkcombin_id=:pkcombin_id ';
-          adotemp55.Parameters.ParamByName('pkunid').Value:=His_Unid;
-          adotemp55.Parameters.ParamByName('pkcombin_id').Value:=PItem^.Machine_CombId;//sCombinID;
-          adotemp55.Open;
-          chk_valu_his_valueid:=adotemp55.fieldbyname('valueid').AsString;
-          adotemp55.Free;
-        end;
-
         adotemp11.Parameters.ParamByName('P_pkcombin_id').Value:=PItem^.Machine_CombId;//sCombinID ;
         adotemp11.Parameters.ParamByName('P_itemid').Value:=PItem^.Machine_itemid ;
         adotemp11.Parameters.ParamByName('P_itemvalue').Value:=PItem^.Machine_ItemValu ;
         adotemp11.Parameters.ParamByName('P_issure').Value:=ifThen(PItem^.Machine_CombId='','0','1') ;//如果没有组合项目就不要显示了,让操作人员自己勾选组合项目吧//trim(sCombinID)
-        adotemp11.Parameters.ParamByName('Surem2').Value:=chk_valu_his_valueid ;
         if EquipUnid>0 then
           adotemp11.Parameters.ParamByName('EquipUnid').Value:=EquipUnid
         else adotemp11.Parameters.ParamByName('EquipUnid').Value:=null;
@@ -743,19 +725,7 @@ begin
   Diagnosetype:=pDiagnosetype;
   ConnectString:=pConnectString;
   EquipUnid:=pEquipUnid;
-
-  //sBarCode:=trim(pBarCode);
-  if trim(pBarCode)<>'' then
-  begin
-    adotemp22:=tadoquery.Create(nil);
-    adotemp22.Connection:=ADOConn;
-    adotemp22.Close;
-    adotemp22.SQL.Clear;
-    adotemp22.SQL.Text:='select cch.unid from chk_con_his cch where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+trim(pBarCode)+',%'' ';
-    adotemp22.Open;
-    His_Unid:=adotemp22.fieldbyname('unid').AsString;
-    adotemp22.Free;
-  end;
+  BarCode:=pBarCode;
 
   //2010-04-05 add by liuying
   lsPatientOtherInfo:=StrToList(pLisClassName,'{!@#}');
