@@ -83,7 +83,6 @@ var
   GermName:string;//细菌
   EquipUnid:integer;//设备唯一编号
   BarCode:String;//双向时,仪器读到的条码号.需要插入chk_con.TjJianYan,以便返回给HIS/PEIS
-  His_Unid:String;//对接外部系统时,HIS/PEIS编号.插入chk_con.His_Unid.对LIS无任何用处，只是用于返回给HIS/PEIS，可能HIS/PEIS用于关联受检者
 
 
 //将计算项目增加或编辑到检验结果表中
@@ -270,10 +269,10 @@ begin
 
     sqlstr:='Insert into chk_con (checkid,check_date,combin_id,'+
     'report_date,Diagnosetype,flagetype,typeflagcase,LSH,'+
-    'patientname,sex,age,Caseno,deptname,check_doctor,bedno,diagnose,Issure,Operator,GermName,His_Unid,TjJianYan)'+
+    'patientname,sex,age,Caseno,deptname,check_doctor,bedno,diagnose,Issure,Operator,GermName,TjJianYan)'+
     ' values (:P_checkid,:P_check_date,:p_combin_id,'+
     ':P_report_date,:P_Diagnosetype,:P_flagetype,:P_typeflagcase,:p_LSH,'+
-    ':patientname,:sex,:age,:Caseno,:deptname,:check_doctor,:bedno,:diagnose,:Issure,:Operator,:GermName,:His_Unid,:TjJianYan ) ';
+    ':patientname,:sex,:age,:Caseno,:deptname,:check_doctor,:bedno,:diagnose,:Issure,:Operator,:GermName,:TjJianYan ) ';
     adotemp11:=tadoquery.Create(nil);
     adotemp11.Connection:=ADOConn;
     adotemp11.Close;
@@ -299,7 +298,6 @@ begin
     adotemp11.Parameters.ParamByName('Issure').Value:=Issure ;
     adotemp11.Parameters.ParamByName('Operator').Value:=Operator ;
     adotemp11.Parameters.ParamByName('GermName').Value:=GermName ;
-    adotemp11.Parameters.ParamByName('His_Unid').Value:=His_Unid ;
     adotemp11.Parameters.ParamByName('TjJianYan').Value:=BarCode ;
     try
       adotemp11.Open;
@@ -664,7 +662,6 @@ var
   adotemp11,adotemp22:tadoquery;
   fs:TFormatSettings;
   LogStr:string;
-  //sBarCode:string;
 begin
   ADOConn.ConnectionString:=pConnectString;
 
@@ -727,7 +724,6 @@ begin
   ConnectString:=pConnectString;
   EquipUnid:=pEquipUnid;
   BarCode:=pBarCode;
-  His_Unid:=pReserve1;
 
   //2010-04-05 add by liuying
   lsPatientOtherInfo:=StrToList(pLisClassName,'{!@#}');
