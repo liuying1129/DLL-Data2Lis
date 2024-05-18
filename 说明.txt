@@ -141,8 +141,10 @@ pSpecType: 样本类型,Lis的类型之一;
 pSpecStatus: 样本状态,Lis的状态之一; 
 pEquipChar: 仪器字母; 
 pCombinID: 组合项目代码; 
-pLisClassName: 病人附加信息.格式:姓名{!@#}性别{!@#}出生日期{!@#}年龄{!@#}门诊/住院号{!@#}送检科室{!@#}送检医生{!@#}床号{!@#}临床诊断{!@#}备注{!@#}检验操作者{!@#}细菌
+pLisClassName: 病人附加信息.格式:姓名{!@#}性别{!@#}出生日期{!@#}年龄{!@#}门诊/住院号{!@#}送检科室{!@#}送检医生{!@#}床号{!@#}临床诊断{!@#}备注{!@#}检验操作者{!@#}细菌{!@#}申请时间{!@#}外部系统唯一编号
 "出生日期"格式:YYYY-MM-DD
+"申请时间"格式:YYYY-MM-DD hh:nn:ss
+"外部系统唯一编号":双向时用.需要插入chk_con.His_Unid,以便返回给HIS/PEIS
 pLisFormCaption: Lis窗体标题; 
 pConnectString: ADO连接字符串; 
 pQuaContSpecNoG: 高值质控样本号,一般为四位,如9999; 

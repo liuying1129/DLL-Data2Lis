@@ -76,11 +76,14 @@ var
   CaseNo:string;
   DeptName:string;//送检科室
   Check_Doctor:string;//送检医生
+  report_date:String;//申请日期
+  ReportDate:TDateTime;//申请日期
   BedNo:string;
   Diagnose:string;//临床诊断
   Issure:string;//备注
   Operator:string;//检验操作者
   GermName:string;//细菌
+  His_Unid:string;//外部系统唯一编号
   EquipUnid:integer;//设备唯一编号
   BarCode:String;//双向时,仪器读到的条码号.需要插入chk_con.TjJianYan,以便返回给HIS/PEIS
 
@@ -269,10 +272,10 @@ begin
 
     sqlstr:='Insert into chk_con (checkid,check_date,combin_id,'+
     'report_date,Diagnosetype,flagetype,typeflagcase,LSH,'+
-    'patientname,sex,age,Caseno,deptname,check_doctor,bedno,diagnose,Issure,Operator,GermName,TjJianYan)'+
+    'patientname,sex,age,Caseno,deptname,check_doctor,bedno,diagnose,Issure,Operator,GermName,TjJianYan,His_Unid)'+
     ' values (:P_checkid,:P_check_date,:p_combin_id,'+
     ':P_report_date,:P_Diagnosetype,:P_flagetype,:P_typeflagcase,:p_LSH,'+
-    ':patientname,:sex,:age,:Caseno,:deptname,:check_doctor,:bedno,:diagnose,:Issure,:Operator,:GermName,:TjJianYan ) ';
+    ':patientname,:sex,:age,:Caseno,:deptname,:check_doctor,:bedno,:diagnose,:Issure,:Operator,:GermName,:TjJianYan,:His_Unid ) ';
     adotemp11:=tadoquery.Create(nil);
     adotemp11.Connection:=ADOConn;
     adotemp11.Close;
@@ -282,7 +285,7 @@ begin
     adotemp11.Parameters.ParamByName('P_checkid').Value:=EquipChar+SpecNo ;
     adotemp11.Parameters.ParamByName('P_check_date').Value:=CheckDate ;
     adotemp11.Parameters.ParamByName('p_combin_id').Value:=GroupName ;//组别
-    adotemp11.Parameters.ParamByName('P_report_date').Value:=CheckDate ;
+    adotemp11.Parameters.ParamByName('P_report_date').Value:=ReportDate ;//申请时间
     adotemp11.Parameters.ParamByName('P_Diagnosetype').Value:=Diagnosetype ;//edit by ly 20070629 CGYXJB->Diagnosetype
     adotemp11.Parameters.ParamByName('P_flagetype').Value:=SpecType ;
     adotemp11.Parameters.ParamByName('P_typeflagcase').Value:=SpecStatus ;
@@ -299,6 +302,7 @@ begin
     adotemp11.Parameters.ParamByName('Operator').Value:=Operator ;
     adotemp11.Parameters.ParamByName('GermName').Value:=GermName ;
     adotemp11.Parameters.ParamByName('TjJianYan').Value:=BarCode ;
+    adotemp11.Parameters.ParamByName('His_Unid').Value:=His_Unid ;
     try
       adotemp11.Open;
       checkunid:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
@@ -741,6 +745,8 @@ begin
     if k+1=10 then Issure:=lsPatientOtherInfo[k];
     if k+1=11 then Operator:=lsPatientOtherInfo[k];
     if k+1=12 then GermName:=lsPatientOtherInfo[k];
+    if k+1=13 then report_date:=lsPatientOtherInfo[k];//申请时间格式:YYYY-MM-DD hh:nn:ss
+    if k+1=14 then His_Unid:=lsPatientOtherInfo[k];//外部系统唯一编号
   end;
   lsPatientOtherInfo.Free;
   if sDateOfBirth<>'' then//根据出生日期算年龄
@@ -759,6 +765,10 @@ begin
     adotemp11.Free;
   end;
   //2010-04-05 add by liuying
+
+  ReportDate:=StrtoDateTimeDef(report_date,ServerDateTime,fs);//申请时间
+  if  ReportDate<2 then ReplaceDate(ReportDate,ServerDateTime);//表示1899-12-30,没有给日期赋值
+  if (HourOf(ReportDate)=0) and (MinuteOf(ReportDate)=0) and (SecondOf(ReportDate)=0) then ReplaceTime(ReportDate,ServerDateTime);//表示没有给时间赋值
 
   ReadMachineItem;
   ScoutIIGetItemValue;
