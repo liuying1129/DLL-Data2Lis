@@ -525,14 +525,12 @@ var
   adotemp,adotemp22:tadoquery;
   i:integer;
   head_unid:integer;
-  sqlstr22,sDate:string;
+  sqlstr22:string;
   PItem : ^TMachineItemInfo;
   sItemValu,calc_express:string;
   iMaxDotLen:integer;
   l_ReturnValue:Single;
 begin
-  sDate:=FormatDateTime('YYYYMMDD',ServerDateTime);
-
   for i :=0  to MachineItemInfo.Count-1 do
   begin
     PItem:=MachineItemInfo.Items[i];
@@ -565,23 +563,24 @@ begin
     adotemp.SQL.Text:='select * from qcghead where itemID=:itemID and '+
                       'qc_year=:P_qc_year and qc_month=:P_qc_month  '; 
     adotemp.Parameters.ParamByName('itemID').Value:=PItem^.Machine_itemid;
-    adotemp.Parameters.ParamByName('P_qc_year').Value:=Copy(sDate,1,4);
-    adotemp.Parameters.ParamByName('P_qc_month').Value:=Copy(sDate,5,2);
+    adotemp.Parameters.ParamByName('P_qc_year').Value:=YearOf(CheckDate);
+    adotemp.Parameters.ParamByName('P_qc_month').Value:=MonthOf(CheckDate);
     adotemp.Open;
     if adotemp.RecordCount>0 then //有该项目的质控值的情况
     begin
       head_unid:=adotemp.fieldbyname('unid').AsInteger;
     end else               //没有该项目的质控值的情况
     begin
-      sqlstr22:='Insert into qcghead (itemID,qc_year,qc_month)'+
-      ' values (:itemID,:P_qc_year,:p_qc_month)';
+      sqlstr22:='Insert into qcghead (itemID,qc_year,qc_month,spectype)'+
+      ' values (:itemID,:P_qc_year,:p_qc_month,:spectype)';
       adotemp.Close;
       adotemp.SQL.Clear;
       adotemp.SQL.Add(sqlstr22);
       adotemp.SQL.Add(' SELECT SCOPE_IDENTITY() AS Insert_Identity ');
       adotemp.Parameters.ParamByName('itemID').Value:=PItem^.Machine_itemid;
-      adotemp.Parameters.ParamByName('P_qc_year').Value:=Copy(sDate,1,4);
-      adotemp.Parameters.ParamByName('p_qc_month').Value:=Copy(sDate,5,2);
+      adotemp.Parameters.ParamByName('P_qc_year').Value:=YearOf(CheckDate);
+      adotemp.Parameters.ParamByName('p_qc_month').Value:=MonthOf(CheckDate);
+      adotemp.Parameters.ParamByName('spectype').Value:=SpecType;
       try
         adotemp.Open;
       except
@@ -596,7 +595,7 @@ begin
     adotemp.SQL.Text:='select * from qcgdata where pkunid=:P_pkunid'+
                         ' and gettime=:P_gettime ';
     adotemp.Parameters.ParamByName('p_pkunid').Value:=head_unid;
-    adotemp.Parameters.ParamByName('P_gettime').Value:=StrToIntDef(Copy(sDate,7,2),0);
+    adotemp.Parameters.ParamByName('P_gettime').Value:=DayOf(CheckDate);
     adotemp.Open;
         
     if adotemp.RecordCount>0 then   //检验结果表中有该检验值的情况则修改
@@ -633,7 +632,7 @@ begin
         ':P_pkunid,:P_gettime,:P_result) ';
       end;
       adotemp.Parameters.ParamByName('P_pkunid').Value:=head_unid ;
-      adotemp.Parameters.ParamByName('P_gettime').Value:=StrToIntDef(Copy(sDate,7,2),0);
+      adotemp.Parameters.ParamByName('P_gettime').Value:=DayOf(CheckDate);
       adotemp.Parameters.ParamByName('P_result').Value:=sItemValu;
       try
         adotemp.EXECSql ;
