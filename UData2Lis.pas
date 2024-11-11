@@ -769,6 +769,8 @@ begin
   if  ReportDate<2 then ReplaceDate(ReportDate,ServerDateTime);//表示1899-12-30,没有给日期赋值
   if (HourOf(ReportDate)=0) and (MinuteOf(ReportDate)=0) and (SecondOf(ReportDate)=0) then ReplaceTime(ReportDate,ServerDateTime);//表示没有给时间赋值
 
+  if ReportDate>=CheckDate then ReportDate:=IncMinute(CheckDate,-10);//如果申请时间大于或等于检查时间,则申请时间=检查时间减去10分钟
+
   ReadMachineItem;
   ScoutIIGetItemValue;
   if SpecNo=pQuaContSpecNo then
