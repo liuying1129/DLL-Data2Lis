@@ -709,6 +709,7 @@ begin
   //记录调试日志stop
 
   SpecNo:=pSpecNo;
+  if trim(SpecNo)='' then SpecNo:=formatdatetime('nnss',now);
 
   fs.DateSeparator:='-';
   fs.TimeSeparator:=':';
