@@ -709,7 +709,9 @@ begin
   //记录调试日志stop
 
   SpecNo:=pSpecNo;
-  if trim(SpecNo)='' then SpecNo:=formatdatetime('nnss',now);
+  //对于样本号，不能有下面的兜底方案
+  //否则，小蝴蝶中样本号、结果均为空，也会向LIS插入只有病人基本信息的记录
+  //if trim(SpecNo)='' then SpecNo:=formatdatetime('nnss',now);
 
   fs.DateSeparator:='-';
   fs.TimeSeparator:=':';
