@@ -158,7 +158,7 @@ begin
     adotemp11.Connection:=ADOConn;
     adotemp11.Close;
     adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:='select * from clinicchkitem where COMMWORD='''+EquipChar+''' ';   //机器项目
+    adotemp11.SQL.Text:='select * from clinicchkitem where COMMWORD='''+EquipChar+''' and dlttype<>'''' ';   //机器项目
     Try
       adotemp11.Open;
     except
@@ -658,13 +658,15 @@ function TData2Lis.fData2Lis(pReceiveItemInfo: OleVariant; const pSpecNo,
   pReserve13: WordBool;pReserve14: WordBool;pReserve15: WordBool;pReserve16: WordBool
   ): WordBool;
 var
-  valetudinarianInfoId,i,j,k:integer;
+  valetudinarianInfoId,i,j,k,n:integer;
   XMLDocument:IXMLDocument;
   ItemInfo:IXMLNode;
   lsPatientOtherInfo:TStrings;
   adotemp11,adotemp22:tadoquery;
   fs:TFormatSettings;
   LogStr:string;
+  ifExistsResult:Boolean;
+  PItem : ^TMachineItemInfo;
 begin
   ADOConn.ConnectionString:=pConnectString;
 
@@ -709,9 +711,7 @@ begin
   //记录调试日志stop
 
   SpecNo:=pSpecNo;
-  //对于样本号，不能有下面的兜底方案
-  //否则，小蝴蝶中样本号、结果均为空，也会向LIS插入只有病人基本信息的记录
-  //if trim(SpecNo)='' then SpecNo:=formatdatetime('nnss',now);
+  if trim(SpecNo)='' then SpecNo:=formatdatetime('nnss',now);
 
   fs.DateSeparator:='-';
   fs.TimeSeparator:=':';
@@ -789,10 +789,22 @@ begin
       SaveDataToQuaContDB(1);
   end else  //保存到病人表中
   begin
+    ifExistsResult:=False;
+    for n :=0  to MachineItemInfo.Count -1 do
+    begin
+      PItem:=MachineItemInfo.Items[n];
+
+      if trim(PItem^.Machine_ItemValu)<>'' then begin ifExistsResult:=True;Break;end;//结果值
+      if trim(PItem^.Machine_Histogram)<>'' then begin ifExistsResult:=True;Break;end;//直方图数据
+      if FileExists(PItem^.Machine_ImagePath) then begin ifExistsResult:=True;Break;end;//图片文件及路径
+    end;
+    if ifExistsResult then//存在有效结果才执行插入LIS的操作。避免只插入患者基本信息而无检验结果的情况
+    begin  
       SaveDatatoDB(valetudinarianInfoId);
       SendMsgToLIS(valetudinarianInfoId);
+    end;
   end;
-  //}
+  
   result:=true;
 end;
 
