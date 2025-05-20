@@ -168,7 +168,7 @@ pReserve9: 保留参数9
 pReserve10: 保留参数10
 pReserve11: 保留参数11
 pReserve12: 保留参数12
-pReserve13: 保留参数13
+pReserve13: 样本号唯一。true则仅根据样本号判断chk_con是否存在该病人，false则根据样本号、检查日期的组合条件判断。一般情况下设置为false。暂仅乌兰察布AFS2000A为true
 pReserve14: 保留参数14
 pReserve15: 保留参数15
 pReserve16: 保留参数16

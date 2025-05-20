@@ -66,6 +66,7 @@ var
   ConnectString:string;//CalcItemPro.dll要用到
   TransItemidString:string;//CalcItemPro.dll要用到
   IfRecLog:boolean;//是否记录日志
+  SpecNoUnique:boolean;//样本号唯一.true:唯一性,false:非唯一性
 
   //病人附加信息
   PatientName:string;
@@ -478,10 +479,16 @@ Begin
   adotemp11.Connection:=ADOConn;
   adotemp11.Close;
   adotemp11.SQL.Clear;
-  adotemp11.SQL.Text:='select * from chk_con where checkid like :P_checkid and '+
-                        'CONVERT(CHAR(10),check_date,121)=:P_check_date and Diagnosetype=:Diagnosetype ';//+PoInfoSql;
-  adotemp11.Parameters.ParamByName('P_checkid').Value:='%'+EquipChar+SpecNo+'%';
-  adotemp11.Parameters.ParamByName('P_check_date').Value:=FormatDateTime('YYYY-MM-DD',CheckDate);
+  if SpecNoUnique then
+  begin
+    adotemp11.SQL.Text:='select * from chk_con where checkid =    :P_checkid and Diagnosetype=:Diagnosetype ';
+    adotemp11.Parameters.ParamByName('P_checkid').Value:=    EquipChar+SpecNo;
+  end else
+  begin
+    adotemp11.SQL.Text:='select * from chk_con where checkid like :P_checkid and Diagnosetype=:Diagnosetype and CONVERT(CHAR(10),check_date,121)=:P_check_date ';
+    adotemp11.Parameters.ParamByName('P_checkid').Value:='%'+EquipChar+SpecNo+'%';
+    adotemp11.Parameters.ParamByName('P_check_date').Value:=FormatDateTime('YYYY-MM-DD',CheckDate);
+  end;
   adotemp11.Parameters.ParamByName('Diagnosetype').Value:=Diagnosetype;
   adotemp11.Open;
   report_doctor:=adotemp11.fieldbyname('report_doctor').AsString;
@@ -693,6 +700,8 @@ begin
   begin
     ReceiveItemInfo:=pReceiveItemInfo;
   end;
+
+  SpecNoUnique:=pReserve13;
 
   //记录调试日志start
   IfRecLog:=pIsSure;
