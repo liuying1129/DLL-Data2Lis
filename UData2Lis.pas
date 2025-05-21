@@ -480,15 +480,12 @@ Begin
   adotemp11.Close;
   adotemp11.SQL.Clear;
   if SpecNoUnique then
-  begin
-    adotemp11.SQL.Text:='select * from chk_con where checkid =    :P_checkid and Diagnosetype=:Diagnosetype ';
-    adotemp11.Parameters.ParamByName('P_checkid').Value:=    EquipChar+SpecNo;
-  end else
-  begin
-    adotemp11.SQL.Text:='select * from chk_con where checkid like :P_checkid and Diagnosetype=:Diagnosetype and CONVERT(CHAR(10),check_date,121)=:P_check_date ';
-    adotemp11.Parameters.ParamByName('P_checkid').Value:='%'+EquipChar+SpecNo+'%';
+    adotemp11.SQL.Text:='select * from chk_con where '',''+REPLACE(checkid,''£¬'','','')+'','' like :P_checkid and Diagnosetype=:Diagnosetype '
+  else begin
+    adotemp11.SQL.Text:='select * from chk_con where '',''+REPLACE(checkid,''£¬'','','')+'','' like :P_checkid and Diagnosetype=:Diagnosetype and CONVERT(CHAR(10),check_date,121)=:P_check_date ';
     adotemp11.Parameters.ParamByName('P_check_date').Value:=FormatDateTime('YYYY-MM-DD',CheckDate);
   end;
+  adotemp11.Parameters.ParamByName('P_checkid').Value:='%,'+EquipChar+SpecNo+',%';
   adotemp11.Parameters.ParamByName('Diagnosetype').Value:=Diagnosetype;
   adotemp11.Open;
   report_doctor:=adotemp11.fieldbyname('report_doctor').AsString;
